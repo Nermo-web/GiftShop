@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Shop.Application.Products
+namespace Shop.Application.GetProducts
 {
-    class GetProducts
+    public class GetProducts
     {
         private ApplicationDbContext _ctx;
 
@@ -15,9 +15,21 @@ namespace Shop.Application.Products
             _ctx = ctx;
         }
 
-        public void Do()
-        {
-            _ctx.Products.ToList();
-        }
+        public IEnumerable<ProductViewModel> Do() =>
+            _ctx.Products.ToList().Select(x => new ProductViewModel
+            {
+                Name = x.Name,
+                Description = x.Description,
+                Value = $"$ { x.Value.ToString("N2") }", // 1110.50 -> 1,100.50 => $ 1,100.50
+
+            });
     }
+
+    public class ProductViewModel
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Value { get; set; }
+    }
+
 }
